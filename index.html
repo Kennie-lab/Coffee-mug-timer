@@ -6,13 +6,20 @@
   <title>Coffee Mug Timer</title>
   <style>
     body {
-      font-family: 'Arial', sans-serif;
-      background-color: #f3e8dc;
-      color: #3e2f2f;
-      text-align: center;
-      margin: 0;
-      padding: 30px 15px;
-    }
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  min-height: 100vh; /* Zorg dat het de hele hoogte van het scherm benut */
+  padding: 30px 15px;
+  font-family: 'Arial', sans-serif;
+  background-color: #f3e8dc;
+  color: #3e2f2f;
+  text-align: center;
+  margin: 0;
+}
+
 
     h1 {
       margin-bottom: 10px;
@@ -21,7 +28,7 @@
     #flip-clock {
       font-size: 2.5em;
       font-family: monospace;
-      margin: 10px 0 30px;
+      margin: 10px 0 100px;
     }
 
     .mug-container {
@@ -29,15 +36,16 @@
       width: 240px;
       height: 300px;
       margin: 0 auto;
+      margin-bottom: 100px;
     }
 
     .handle {
       position: absolute;
-      right: -40px;
+      right: -70px;
       top: 80px;
       width: 35px;
       height: 90px;
-      border: 6px solid white;
+      border: 15px solid white;
       border-left: none;
       border-radius: 0 60px 60px 0;
       z-index: 0;
@@ -46,7 +54,7 @@
     .mug {
       width: 100%;
       height: 100%;
-      border: 6px solid white;
+      border: 15px solid white;
       border-radius: 0 0 100px 100px;
       overflow: hidden;
       position: relative;
@@ -62,8 +70,56 @@
       height: 100%;
       transition: height 1s linear;
       z-index: -1;
-      border-radius: 0 0 100px 100px;
+      border-radius: 0 0 85px 85px;
     }
+
+    .steam {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 24px;
+  height: 90px;
+  background: radial-gradient(ellipse at center, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0) 70%);
+  opacity: 0.8;
+  border-radius: 50%;
+  animation: steamUp 3s infinite ease-in;
+  transform: translateX(-50%);
+  pointer-events: none;
+  filter: blur(1px);
+}
+
+/* Kleine variaties voor natuurlijke look */
+.steam1 {
+  animation-delay: 0s;
+  width: 22px;
+  height: 80px;
+}
+
+.steam2 {
+  animation-delay: 1s;
+  width: 18px;
+  height: 65px;
+  left: 46%;
+}
+
+.steam3 {
+  animation-delay: 2s;
+  width: 20px;
+  height: 75px;
+  left: 54%;
+}
+
+@keyframes steamUp {
+  0% {
+    transform: translateX(-50%) translateY(0) scale(1);
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateX(-50%) translateY(-100px) scale(1.3);
+    opacity: 0;
+  }
+}
+
 
     .timer-settings {
       display: flex;
@@ -71,6 +127,7 @@
       flex-wrap: wrap;
       gap: 30px;
       margin: 30px auto 20px;
+      margin-bottom: 10px;
     }
 
     .time-group {
@@ -100,6 +157,7 @@
       justify-content: center;
       gap: 15px;
       flex-wrap: wrap;
+      margin-bottom: 10px;
     }
 
     button {
@@ -113,7 +171,7 @@
     }
 
     .donate {
-      margin-top: 30px;
+      margin-top: 0px;
     }
 
     .donate-btn {
@@ -144,8 +202,13 @@
 <body>
   <h1>Coffee Mug Timer</h1>
   <div id="flip-clock">00:00</div>
+
   <div class="mug-container">
     <div class="handle"></div>
+    <div class="steam steam1"></div>
+    <div class="steam steam2"></div>
+    <div class="steam steam3"></div>
+
     <div class="mug">
       <div class="coffee-fill" id="coffee-fill"></div>
     </div>
@@ -173,6 +236,9 @@
     <button class="donate-btn" onclick="window.open('https://paypal.me/kennieroethof', '_blank')">Coffee ☕</button>
   </div>
 
+  <!-- 🔊 Jouw audio -->
+  <audio id="alert-sound" src="coffee timer alarm.mp3" preload="auto"></audio>
+
   <script>
     let interval;
     let isPaused = false;
@@ -199,6 +265,7 @@
         updateClock();
       } else if (remainingTime <= 0) {
         clearInterval(interval);
+        document.getElementById('alert-sound').play(); // 🔔 Geluidje afspelen
         isBreak = !isBreak;
         startTimer();
       }
